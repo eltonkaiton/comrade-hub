@@ -1,0 +1,236 @@
+.post-transport-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #f6f8fc;
+  color: #172033;
+  color-scheme: light;
+  text-align: left;
+}
+
+.post-transport-nav {
+  height: 70px;
+  background: white;
+  border-bottom: 1px solid #e4e8ef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 7%;
+}
+
+.post-transport-logo {
+  color: #172033;
+  font-size: 22px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.post-transport-logo span {
+  color: #2563eb;
+}
+
+.transport-back-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.post-transport-container {
+  width: min(850px, 92%);
+  margin: auto;
+  padding: 45px 0 70px;
+}
+
+.transport-form-heading {
+  display: flex;
+  gap: 17px;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.transport-form-heading > span {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  background: #dbeafe;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+}
+
+.transport-form-heading h1 {
+  margin: 0 0 5px;
+  color: #172033;
+  font-size: 1.9rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-weight: 700;
+}
+
+.transport-form-heading p {
+  margin: 0;
+  color: #667085;
+}
+
+.transport-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.transport-form-section {
+  background: white;
+  border: 1px solid #e4e8ef;
+  border-radius: 15px;
+  padding: 26px;
+}
+
+.transport-form-section h2 {
+  font-size: 18px;
+  margin: 0 0 20px;
+  color: #172033;
+  line-height: 1.3;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.transport-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.transport-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.transport-form-group.full {
+  grid-column: 1 / -1;
+}
+
+.transport-form-group label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #344054;
+  text-align: left;
+}
+
+.transport-form-group input,
+.transport-form-group select,
+.transport-form-group textarea {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #d5dbe5;
+  border-radius: 8px;
+  background: white;
+  color: #172033;
+  padding: 12px;
+  font: inherit;
+  outline: none;
+  text-align: left;
+}
+
+.transport-form-group input:focus,
+.transport-form-group select:focus,
+.transport-form-group textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+
+.transport-service-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.transport-option {
+  border: 1px solid #d5dbe5;
+  background: white;
+  color: #475467;
+  padding: 10px 13px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.transport-option.selected {
+  background: #eaf2ff;
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.transport-photo-upload {
+  text-align: center;
+  border: 2px dashed #cbd5e1;
+  padding: 35px;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.transport-photo-upload > div {
+  font-size: 38px;
+}
+
+.transport-photo-upload h3 {
+  margin: 8px 0;
+}
+
+.transport-photo-upload p {
+  color: #667085;
+}
+
+.transport-photo-upload input {
+  margin-top: 10px;
+}
+
+.transport-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.transport-cancel,
+.transport-submit {
+  padding: 13px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.transport-cancel {
+  background: white;
+  border: 1px solid #d5dbe5;
+}
+
+.transport-submit {
+  background: #2563eb;
+  border: none;
+  color: white;
+}
+
+@media (max-width: 650px) {
+  .post-transport-nav {
+    padding: 0 4%;
+  }
+
+  .post-transport-container {
+    width: 94%;
+  }
+
+  .transport-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .transport-form-group.full {
+    grid-column: auto;
+  }
+
+  .transport-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .transport-cancel,
+  .transport-submit {
+    width: 100%;
+  }
+}

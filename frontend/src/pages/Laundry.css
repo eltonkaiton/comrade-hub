@@ -1,0 +1,979 @@
+/* =========================================================
+   LAUNDRY LISTING PAGE
+   ========================================================= */
+
+.laundry-page {
+  min-height: 100vh;
+  background: #f6f9fc;
+  color: #0f172a;
+}
+
+.laundry-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+  .laundry-container {
+    padding: 0 1rem;
+  }
+}
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+.laundry-navbar {
+  background: #fff;
+  border-bottom: 1px solid #e5e9f0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.laundry-nav-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.laundry-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.laundry-logo-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #06b6d4, #0ea5e9);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.laundry-logo span:last-child,
+.laundry-logo span:not(:first-child) {
+  color: #0ea5e9;
+}
+
+.laundry-nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.laundry-nav-links a {
+  color: #475569;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.laundry-nav-links a:hover {
+  color: #0ea5e9;
+}
+
+.laundry-nav-links a.active {
+  color: #0ea5e9;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .laundry-nav-inner {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .laundry-nav-links {
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.laundry-hero {
+  background: #0c4a6e;
+  color: #fff;
+  padding: 4rem 0 3.5rem;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.laundry-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(12, 40, 58, 0.88),
+    rgba(12, 55, 72, 0.68)
+  );
+}
+
+.laundry-hero-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #0c4a6e;
+}
+
+.laundry-hero-backdrop {
+  position: absolute;
+  inset: -10px;
+  background-image: var(--laundry-slide-image);
+  background-position: center;
+  background-size: cover;
+  filter: blur(8px);
+  opacity: 0.7;
+}
+
+.laundry-hero-backdrop-0 {
+  animation: laundry-hero-zoom 5s ease-in-out both;
+}
+
+.laundry-hero-backdrop-1 {
+  animation: laundry-hero-pan-left 5s ease-in-out both;
+}
+
+.laundry-hero-backdrop-2 {
+  animation: laundry-hero-pan-right 5s ease-in-out both;
+}
+
+.laundry-hero-background img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: laundry-hero-image-in 0.8s ease both;
+}
+
+@keyframes laundry-hero-image-in {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes laundry-hero-zoom {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.14);
+  }
+}
+
+@keyframes laundry-hero-pan-left {
+  from {
+    opacity: 0.7;
+    transform: scale(1.14) translateX(2%);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.14) translateX(-2%);
+  }
+}
+
+@keyframes laundry-hero-pan-right {
+  from {
+    opacity: 0.7;
+    transform: scale(1.14) translateX(-2%);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.14) translateX(2%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .laundry-hero-backdrop,
+  .laundry-hero-background img {
+    animation: none;
+  }
+}
+
+.laundry-hero .laundry-container {
+  position: relative;
+  z-index: 2;
+}
+
+.laundry-hero::after {
+  content: '🧺';
+  position: absolute;
+  right: -40px;
+  bottom: -60px;
+  font-size: 18rem;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.laundry-hero-content {
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+}
+
+.laundry-eyebrow {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+.laundry-hero h1 {
+  font-size: 2.4rem;
+  line-height: 1.15;
+  margin: 0 0 0.75rem;
+  font-weight: 800;
+}
+
+.laundry-hero p {
+  font-size: 1.02rem;
+  line-height: 1.6;
+  opacity: 0.95;
+  margin: 0 0 1.75rem;
+  max-width: 620px;
+}
+
+.laundry-search-box {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr auto;
+  gap: 0.5rem;
+  background: #fff;
+  border-radius: 14px;
+  padding: 0.5rem;
+  box-shadow: 0 12px 32px rgba(2, 132, 199, 0.25);
+}
+
+.laundry-search-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  border-right: 1px solid #e5e9f0;
+}
+
+.laundry-search-field:last-of-type {
+  border-right: none;
+}
+
+.laundry-search-field span {
+  color: #94a3b8;
+}
+
+.laundry-search-field input {
+  border: none;
+  outline: none;
+  padding: 0.65rem 0;
+  font-size: 0.92rem;
+  width: 100%;
+  color: #0f172a;
+  background: transparent;
+}
+
+.laundry-search-box select {
+  border: none;
+  outline: none;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.92rem;
+  background: transparent;
+  border-right: 1px solid #e5e9f0;
+  color: #334155;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.laundry-search-btn {
+  background: #0ea5e9;
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+}
+
+.laundry-search-btn:hover {
+  background: #0284c7;
+}
+
+.laundry-quick-links {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.laundry-quick-links > span {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.laundry-quick-links button {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  border: none;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+}
+
+.laundry-quick-links button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 900px) {
+  .laundry-search-box {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .laundry-search-field,
+  .laundry-search-box select {
+    border-right: none;
+    border-bottom: 1px solid #e5e9f0;
+    padding: 0.6rem 0;
+  }
+
+  .laundry-search-box select {
+    padding: 0.6rem 0;
+  }
+
+  .laundry-search-btn {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .laundry-hero {
+    padding: 2.5rem 0 2rem;
+  }
+
+  .laundry-hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .laundry-hero::after {
+    font-size: 10rem;
+  }
+}
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+.laundry-section {
+  padding: 3.5rem 0;
+}
+
+.laundry-light-section {
+  background: #f0f9ff;
+}
+
+.laundry-section-heading {
+  margin-bottom: 2rem;
+}
+
+.laundry-section-heading.centered {
+  text-align: center;
+}
+
+.laundry-section-label {
+  display: inline-block;
+  color: #0ea5e9;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.5rem;
+}
+
+.laundry-section-heading h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.65rem;
+  color: #0f172a;
+}
+
+.laundry-section-heading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.95rem;
+  max-width: 620px;
+}
+
+.laundry-heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.laundry-sort {
+  border: 1px solid #d5dbe5;
+  background: #fff;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  color: #334155;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* =========================================================
+   CATEGORY CARDS
+   ========================================================= */
+.laundry-category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.laundry-category-card {
+  background: #fff;
+  border: 1px solid #e5e9f0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.laundry-category-card:hover {
+  transform: translateY(-3px);
+  border-color: #0ea5e9;
+  box-shadow: 0 12px 28px rgba(14, 165, 233, 0.15);
+}
+
+.laundry-category-icon {
+  font-size: 1.8rem;
+  background: #e0f2fe;
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.laundry-category-card h3 {
+  margin: 0 0 0.15rem;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.laundry-category-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.laundry-category-card strong {
+  margin-left: auto;
+  color: #0ea5e9;
+  font-size: 1.1rem;
+}
+
+/* =========================================================
+   PROVIDER GRID
+   ========================================================= */
+.laundry-provider-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.25rem;
+}
+
+.laundry-provider-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.laundry-provider-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+}
+
+.laundry-provider-top {
+  position: relative;
+}
+
+.laundry-image-slideshow {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.laundry-image-slideshow img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.laundry-slide-control {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.72);
+  color: #fff;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.laundry-slide-previous {
+  left: 0.65rem;
+}
+
+.laundry-slide-next {
+  right: 0.65rem;
+}
+
+.laundry-slide-indicators {
+  position: absolute;
+  right: 0;
+  bottom: 0.65rem;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.laundry-slide-indicators button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+
+.laundry-slide-indicators button.active {
+  background: #0ea5e9;
+}
+
+.laundry-favorite {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.15s ease;
+}
+
+.laundry-favorite:hover {
+  color: #ef4444;
+}
+
+.laundry-provider-body {
+  padding: 1rem 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.laundry-provider-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.laundry-provider-title h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.laundry-verified {
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.laundry-provider-location {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.laundry-provider-body > p {
+  margin: 0;
+  color: #475569;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.laundry-provider-services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.laundry-tag {
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.laundry-provider-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.laundry-provider-rating span:first-child {
+  color: #f59e0b;
+}
+
+.laundry-provider-rating strong {
+  color: #0f172a;
+}
+
+.laundry-provider-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.6rem;
+  border-top: 1px solid #f1f5f9;
+  font-size: 0.85rem;
+  margin-top: auto;
+}
+
+.laundry-provider-meta strong {
+  color: #0ea5e9;
+  font-size: 0.95rem;
+}
+
+.laundry-provider-meta span {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.laundry-provider-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.laundry-view-btn {
+  flex: 1;
+  background: #0ea5e9;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: background 0.15s ease;
+}
+
+.laundry-view-btn:hover {
+  background: #0284c7;
+}
+
+.laundry-call-btn {
+  width: 38px;
+  height: 38px;
+  background: #f1f5f9;
+  color: #0f172a;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: background 0.15s ease;
+}
+
+.laundry-call-btn:hover {
+  background: #e2e8f0;
+}
+
+.laundry-whatsapp-btn {
+  background: #25d366;
+  color: #fff;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.82rem;
+  transition: background 0.15s ease;
+}
+
+.laundry-whatsapp-btn:hover {
+  background: #1eb955;
+}
+
+/* =========================================================
+   EMPTY / LOADING STATE
+   ========================================================= */
+.laundry-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: #fff;
+  border-radius: 16px;
+  grid-column: 1 / -1;
+}
+
+.laundry-empty > div {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.laundry-empty h3 {
+  margin: 0 0 0.5rem;
+  color: #0f172a;
+}
+
+.laundry-empty p {
+  color: #64748b;
+  margin: 0 0 1.25rem;
+}
+
+.laundry-empty button {
+  background: #0ea5e9;
+  color: #fff;
+  border: none;
+  padding: 0.65rem 1.35rem;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* =========================================================
+   PROVIDER CTA BANNER
+   ========================================================= */
+.laundry-provider-cta {
+  padding: 2rem 0;
+}
+
+.laundry-cta-card {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #fff;
+  border-radius: 18px;
+  padding: 2.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.laundry-cta-card .laundry-section-label {
+  color: #38bdf8;
+}
+
+.laundry-cta-card h2 {
+  margin: 0.35rem 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.laundry-cta-card p {
+  margin: 0;
+  color: #cbd5e1;
+  max-width: 520px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.laundry-cta-btn {
+  background: #0ea5e9;
+  color: #fff;
+  padding: 0.85rem 1.5rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.92rem;
+  transition: background 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.laundry-cta-btn:hover {
+  background: #0284c7;
+  transform: translateY(-2px);
+}
+
+/* =========================================================
+   HOW IT WORKS
+   ========================================================= */
+.laundry-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.laundry-step {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  border: 1px solid #e5e9f0;
+}
+
+.laundry-step-number {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #0ea5e9;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.laundry-step h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+
+.laundry-step p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.laundry-footer {
+  background: #0f172a;
+  color: #cbd5e1;
+  padding: 3rem 0 1.5rem;
+  margin-top: 3rem;
+}
+
+.laundry-footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.laundry-footer-grid h4 {
+  margin: 0 0 1rem;
+  color: #fff;
+  font-size: 0.92rem;
+}
+
+.laundry-footer-grid a {
+  display: block;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.88rem;
+  padding: 0.25rem 0;
+  transition: color 0.15s ease;
+}
+
+.laundry-footer-grid a:hover {
+  color: #38bdf8;
+}
+
+.laundry-footer-grid p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #94a3b8;
+  max-width: 320px;
+}
+
+.laundry-footer .footer-logo {
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.laundry-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1.5rem;
+  border-top: 1px solid #1e293b;
+  font-size: 0.82rem;
+  color: #64748b;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .laundry-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .laundry-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}

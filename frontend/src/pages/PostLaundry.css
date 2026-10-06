@@ -1,0 +1,361 @@
+/* =========================================================
+   POST LAUNDRY PAGE
+   ========================================================= */
+
+.post-laundry-page {
+  min-height: 100vh;
+  background: #f6f9fc;
+  color: #0f172a;
+}
+
+.post-laundry-nav {
+  background: #fff;
+  border-bottom: 1px solid #e5e9f0;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.post-laundry-logo {
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-decoration: none;
+  color: #0f172a;
+}
+
+.post-laundry-logo span {
+  color: #0ea5e9;
+}
+
+.laundry-back-link {
+  color: #475569;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.laundry-back-link:hover {
+  background: #f1f5f9;
+}
+
+.post-laundry-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.laundry-form-heading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.laundry-form-heading > span {
+  font-size: 2.25rem;
+  background: #e0f2fe;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.laundry-form-heading h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.55rem;
+  color: #0f172a;
+}
+
+.laundry-form-heading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+.laundry-form-alert {
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+}
+
+.laundry-form-alert.error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+.laundry-form {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.laundry-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eef1f6;
+}
+
+.laundry-form-section:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.laundry-form-section h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.laundry-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.laundry-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.laundry-form-group.full {
+  grid-column: 1 / -1;
+}
+
+.laundry-form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.laundry-form-group input,
+.laundry-form-group select,
+.laundry-form-group textarea {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid #d5dbe5;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: #0f172a;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.laundry-form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.laundry-form-group input:focus,
+.laundry-form-group select:focus,
+.laundry-form-group textarea:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.laundry-error {
+  color: #dc2626;
+  font-size: 0.78rem;
+}
+
+.laundry-error.block {
+  display: block;
+  margin-top: 0.4rem;
+}
+
+/* Service chips */
+.laundry-service-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.laundry-option {
+  border: 1px solid #d5dbe5;
+  background: #fff;
+  color: #334155;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.laundry-option:hover {
+  border-color: #0ea5e9;
+  color: #0ea5e9;
+}
+
+.laundry-option.selected {
+  background: #0ea5e9;
+  border-color: #0ea5e9;
+  color: #fff;
+}
+
+/* Upload */
+.laundry-photo-upload {
+  display: block;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 1.75rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.laundry-photo-upload:hover {
+  border-color: #0ea5e9;
+  background: #f0f9ff;
+}
+
+.laundry-photo-upload > div {
+  font-size: 2rem;
+}
+
+.laundry-photo-upload h3 {
+  margin: 0.35rem 0 0.25rem;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.laundry-photo-upload p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.laundry-image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.laundry-image-tile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.laundry-image-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.laundry-remove-image {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.laundry-remove-image:hover {
+  background: #dc2626;
+}
+
+/* Actions */
+.laundry-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eef1f6;
+}
+
+.laundry-cancel {
+  background: transparent;
+  color: #475569;
+  border: 1px solid #d5dbe5;
+  padding: 0.75rem 1.35rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+
+.laundry-cancel:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.laundry-submit {
+  background: #0ea5e9;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+
+.laundry-submit:hover:not(:disabled) {
+  background: #0284c7;
+}
+
+.laundry-submit:disabled,
+.laundry-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .post-laundry-container {
+    padding: 1.25rem;
+  }
+
+  .laundry-form {
+    padding: 1.25rem;
+  }
+
+  .laundry-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .laundry-form-actions .laundry-cancel,
+  .laundry-form-actions .laundry-submit {
+    width: 100%;
+  }
+}
