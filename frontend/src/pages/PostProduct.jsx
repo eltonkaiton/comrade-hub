@@ -4,7 +4,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "./PostProduct.css";
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://comradehub-api.onrender.com/api";
 
 function PostProduct() {
   const navigate = useNavigate();

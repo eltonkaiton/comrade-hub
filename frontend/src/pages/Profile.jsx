@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Profile.css';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://comradehub-api.onrender.com/api';
 const accountTypes = ['Comrade', 'Seller', 'Landlord', 'Motorist', 'Business'];
 
 function getInitials(user) {

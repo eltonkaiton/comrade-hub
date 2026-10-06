@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './PostHouse.css';
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://comradehub-api.onrender.com';
 
 const HOUSE_TYPES = ['Single Room', 'Bedsitter', 'One Bedroom', 'Hostel', 'Other'];
 const AVAILABILITY_OPTIONS = ['Available Now', 'Available Soon', 'Taken'];

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Laundry.css';
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://comradehub-api.onrender.com';
 const LAUNDRY_ENDPOINT = `${API_BASE_URL}/api/laundry`;
 
 const PLACEHOLDER_IMAGE =

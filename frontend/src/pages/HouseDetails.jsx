@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import './HouseDetails.css';
 
 // 👇 Same hardcoded backend base URL as elsewhere — change if needed
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://comradehub-api.onrender.com';
 const PLACEHOLDER_IMAGE =
   'https://via.placeholder.com/1200x800?text=No+Image';
 

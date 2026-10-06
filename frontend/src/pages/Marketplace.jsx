@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import './Marketplace.css';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://comradehub-api.onrender.com/api';
 const API_HOST = API_BASE_URL.replace('/api', '');
 
 // Category tiles (visual clickable tiles)

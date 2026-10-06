@@ -30,7 +30,7 @@ const popularHouseSearches = [
 ];
 
 // 👇 Hardcoded backend base URL — change if your backend runs elsewhere
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://comradehub-api.onrender.com';
 const HOUSES_ENDPOINT = `${API_BASE_URL}/api/houses`;
 
 const PLACEHOLDER_IMAGE =

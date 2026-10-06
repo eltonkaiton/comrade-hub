@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Transport.css';
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://comradehub-api.onrender.com';
 const TRANSPORT_ENDPOINT = `${API_BASE_URL}/api/transport`;
 
 const PLACEHOLDER_IMAGE =
