@@ -3,9 +3,20 @@ import Product from "../models/Product.js";
 // CREATE PRODUCT
 export const createProduct = async (req, res, next) => {
   try {
-    const { title, category, condition, price, location, description, phone } = req.body;
+    const {
+      title,
+      category,
+      condition,
+      price,
+      location,
+      description,
+      phone,
+    } = req.body;
 
-    const images = req.files ? req.files.map((f) => `/uploads/${f.filename}`) : [];
+    // CloudinaryStorage provides the uploaded image URL in file.path
+    const images = req.files
+      ? req.files.map((file) => file.path || file.secure_url)
+      : [];
 
     const product = await Product.create({
       title,
@@ -46,20 +57,47 @@ export const getProducts = async (req, res, next) => {
 
     const query = { status: "active" };
 
-    if (category && category !== "All") query.category = category;
-    if (condition) query.condition = condition;
-    if (location) query.location = new RegExp(location, "i");
+    if (category && category !== "All") {
+      query.category = category;
+    }
+
+    if (condition) {
+      query.condition = condition;
+    }
+
+    if (location) {
+      query.location = new RegExp(location, "i");
+    }
+
     if (minPrice || maxPrice) {
       query.price = {};
-      if (minPrice) query.price.$gte = Number(minPrice);
-      if (maxPrice) query.price.$lte = Number(maxPrice);
+
+      if (minPrice) {
+        query.price.$gte = Number(minPrice);
+      }
+
+      if (maxPrice) {
+        query.price.$lte = Number(maxPrice);
+      }
     }
-    if (search) query.$text = { $search: search };
+
+    if (search) {
+      query.$text = { $search: search };
+    }
 
     let sortBy = { createdAt: -1 };
-    if (sort === "price_asc") sortBy = { price: 1 };
-    if (sort === "price_desc") sortBy = { price: -1 };
-    if (sort === "oldest") sortBy = { createdAt: 1 };
+
+    if (sort === "price_asc") {
+      sortBy = { price: 1 };
+    }
+
+    if (sort === "price_desc") {
+      sortBy = { price: -1 };
+    }
+
+    if (sort === "oldest") {
+      sortBy = { createdAt: 1 };
+    }
 
     const skip = (Number(page) - 1) * Number(limit);
 
@@ -69,6 +107,7 @@ export const getProducts = async (req, res, next) => {
         .skip(skip)
         .limit(Number(limit))
         .populate("sellerId", "name firstName email"),
+
       Product.countDocuments(query),
     ]);
 
@@ -89,14 +128,22 @@ export const getProducts = async (req, res, next) => {
 export const getProductById = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
+
     if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
     }
 
     product.views += 1;
+
     await product.save();
 
-    res.json({ success: true, product });
+    res.json({
+      success: true,
+      product,
+    });
   } catch (error) {
     next(error);
   }
@@ -106,22 +153,39 @@ export const getProductById = async (req, res, next) => {
 export const updateProduct = async (req, res, next) => {
   try {
     const updates = { ...req.body };
-    if (updates.price !== undefined) updates.price = Number(updates.price);
 
-    if (req.files && req.files.length > 0) {
-      updates.images = req.files.map((f) => `/uploads/${f.filename}`);
+    if (updates.price !== undefined) {
+      updates.price = Number(updates.price);
     }
 
-    const product = await Product.findByIdAndUpdate(req.params.id, updates, {
-      new: true,
-      runValidators: true,
-    });
+    // If new images were uploaded, save their Cloudinary URLs
+    if (req.files && req.files.length > 0) {
+      updates.images = req.files.map(
+        (file) => file.path || file.secure_url
+      );
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      updates,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
     }
 
-    res.json({ success: true, message: "Product updated successfully", product });
+    res.json({
+      success: true,
+      message: "Product updated successfully",
+      product,
+    });
   } catch (error) {
     next(error);
   }
@@ -131,10 +195,18 @@ export const updateProduct = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
+
     if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
     }
-    res.json({ success: true, message: "Product deleted successfully" });
+
+    res.json({
+      success: true,
+      message: "Product deleted successfully",
+    });
   } catch (error) {
     next(error);
   }
@@ -148,10 +220,19 @@ export const markAsSold = async (req, res, next) => {
       { status: "sold" },
       { new: true }
     );
+
     if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
     }
-    res.json({ success: true, message: "Product marked as sold", product });
+
+    res.json({
+      success: true,
+      message: "Product marked as sold",
+      product,
+    });
   } catch (error) {
     next(error);
   }

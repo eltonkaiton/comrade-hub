@@ -1,9 +1,5 @@
 import Transport from '../models/Transport.js';
 
-function buildFileUrl(req, filename) {
-  return `${req.protocol}://${req.get('host')}/uploads/${filename}`;
-}
-
 /**
  * @route   POST /api/transport
  * @desc    Create a new transport listing
@@ -33,24 +29,35 @@ export const createTransport = async (req, res, next) => {
 
     // Services: array, JSON string, or comma-separated
     let servicesArr = [];
+
     if (Array.isArray(services)) {
       servicesArr = services;
     } else if (typeof services === 'string' && services.trim()) {
       try {
         const parsed = JSON.parse(services);
+
         servicesArr = Array.isArray(parsed)
           ? parsed
-          : services.split(',').map((s) => s.trim()).filter(Boolean);
+          : services
+              .split(',')
+              .map((s) => s.trim())
+              .filter(Boolean);
       } catch {
-        servicesArr = services.split(',').map((s) => s.trim()).filter(Boolean);
+        servicesArr = services
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
       }
     }
 
-    const imageUrls = (req.files || []).map((file) =>
-      buildFileUrl(req, file.filename)
+    // Uploaded files -> Cloudinary URLs
+    const imageUrls = (req.files || []).map(
+      (file) => file.path || file.secure_url
     );
 
+    // Allow client to also send existing image URLs
     let incomingUrls = [];
+
     if (req.body.images) {
       try {
         const parsed = JSON.parse(req.body.images);
@@ -95,11 +102,17 @@ export const getTransports = async (req, res, next) => {
 
     const query = {};
 
-    if (type && type !== 'All') query.type = type;
-    if (location) query.location = new RegExp(location.trim(), 'i');
+    if (type && type !== 'All') {
+      query.type = type;
+    }
+
+    if (location) {
+      query.location = new RegExp(location.trim(), 'i');
+    }
 
     if (search) {
       const regex = new RegExp(search.trim(), 'i');
+
       query.$or = [
         { name: regex },
         { location: regex },
@@ -128,9 +141,12 @@ export const getTransports = async (req, res, next) => {
  */
 export const getMyTransports = async (req, res, next) => {
   try {
-    const transports = await Transport.find({ owner: req.user._id }).sort({
+    const transports = await Transport.find({
+      owner: req.user._id,
+    }).sort({
       createdAt: -1,
     });
+
     return res.json(transports);
   } catch (err) {
     next(err);
@@ -148,11 +164,14 @@ export const getTransportById = async (req, res, next) => {
       'owner',
       'name email phone'
     );
+
     if (!transport) {
-      return res
-        .status(404)
-        .json({ success: false, message: 'Transport service not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Transport service not found',
+      });
     }
+
     return res.json(transport);
   } catch (err) {
     next(err);
@@ -167,19 +186,22 @@ export const getTransportById = async (req, res, next) => {
 export const updateTransport = async (req, res, next) => {
   try {
     const transport = await Transport.findById(req.params.id);
+
     if (!transport) {
-      return res
-        .status(404)
-        .json({ success: false, message: 'Transport service not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Transport service not found',
+      });
     }
 
     const isOwner = String(transport.owner) === String(req.user._id);
     const isAdmin = req.user.role === 'admin';
 
     if (!isOwner && !isAdmin) {
-      return res
-        .status(403)
-        .json({ success: false, message: 'Not authorized to edit this listing' });
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to edit this listing',
+      });
     }
 
     const fields = [
@@ -192,28 +214,41 @@ export const updateTransport = async (req, res, next) => {
       'description',
       'contactEmail',
     ];
-    fields.forEach((f) => {
-      if (req.body[f] !== undefined) transport[f] = req.body[f];
+
+    fields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        transport[field] = req.body[field];
+      }
     });
 
     if (req.body.services !== undefined) {
       let arr = req.body.services;
+
       if (typeof arr === 'string') {
         try {
           arr = JSON.parse(arr);
         } catch {
-          arr = arr.split(',').map((s) => s.trim()).filter(Boolean);
+          arr = arr
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean);
         }
       }
+
       transport.services = Array.isArray(arr) ? arr : [];
     }
 
-    const newImages = (req.files || []).map((file) =>
-      `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
+    // New uploaded images -> Cloudinary URLs
+    const newImages = (req.files || []).map(
+      (file) => file.path || file.secure_url
     );
-    if (newImages.length) transport.images = [...transport.images, ...newImages];
+
+    if (newImages.length) {
+      transport.images = [...transport.images, ...newImages];
+    }
 
     const updated = await transport.save();
+
     return res.json({
       success: true,
       message: 'Transport updated',
@@ -232,23 +267,30 @@ export const updateTransport = async (req, res, next) => {
 export const deleteTransport = async (req, res, next) => {
   try {
     const transport = await Transport.findById(req.params.id);
+
     if (!transport) {
-      return res
-        .status(404)
-        .json({ success: false, message: 'Transport service not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Transport service not found',
+      });
     }
 
     const isOwner = String(transport.owner) === String(req.user._id);
     const isAdmin = req.user.role === 'admin';
 
     if (!isOwner && !isAdmin) {
-      return res
-        .status(403)
-        .json({ success: false, message: 'Not authorized to delete this listing' });
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to delete this listing',
+      });
     }
 
     await transport.deleteOne();
-    return res.json({ success: true, message: 'Transport deleted' });
+
+    return res.json({
+      success: true,
+      message: 'Transport deleted',
+    });
   } catch (err) {
     next(err);
   }
