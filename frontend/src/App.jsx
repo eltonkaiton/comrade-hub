@@ -13,6 +13,7 @@ import Home from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
+import AdminDashboard from './pages/AdminDashboard';
 
 // =====================================================
 // MAIN PAGES
@@ -95,6 +96,14 @@ function App() {
       ===================================================== */}
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/forgot-password"
         element={

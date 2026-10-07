@@ -128,7 +128,6 @@ function Transport() {
             backendType: item.type,
             location: item.location ?? 'Location not specified',
             serviceArea: item.serviceArea ?? '',
-            phone: item.phone ?? owner.phone ?? '',
             price: item.price ? `From KES ${Number(item.price).toLocaleString()}` : 'Contact for price',
             availability: item.availability ?? 'Available Now',
             verified: Boolean(item.verified),
@@ -461,34 +460,6 @@ function Transport() {
                         View Details
                       </Link>
 
-                      {provider.phone ? (
-                        <>
-                          <a
-                            href={`tel:${provider.phone.replace(/\s/g, '')}`}
-                            className="transport-call-btn"
-                            title="Call provider"
-                            aria-label={`Call ${provider.name}`}
-                          >
-                            ☎
-                          </a>
-
-                          <a
-                            href={`https://wa.me/${provider.phone.replace(
-                              /\D/g,
-                              ''
-                            )}?text=${encodeURIComponent(
-                              `Hello ${provider.name}, I found your transport service on ComradeHub and would like to make an enquiry.`
-                            )}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="transport-whatsapp-btn"
-                            title="WhatsApp provider"
-                            aria-label={`Message ${provider.name} on WhatsApp`}
-                          >
-                            WhatsApp
-                          </a>
-                        </>
-                      ) : null}
                     </div>
                   </div>
                 </article>
@@ -546,7 +517,7 @@ function Transport() {
             <span className="transport-section-label">HOW IT WORKS</span>
             <h2>Getting Transport Is Simple</h2>
             <p>
-              ComradeHub makes finding and contacting transport providers easy.
+                Find a transport provider and send a booking request with your trip details.
             </p>
           </div>
 

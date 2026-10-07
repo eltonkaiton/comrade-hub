@@ -1,4 +1,86 @@
 import Transport from '../models/Transport.js';
+import TransportBooking from '../models/TransportBooking.js';
+
+export const createTransportBooking = async (req, res, next) => {
+  try {
+    const transport = await Transport.findById(req.params.id);
+
+    if (!transport) {
+      return res.status(404).json({
+        success: false,
+        message: 'Transport service not found',
+      });
+    }
+
+    if (String(transport.owner) === String(req.user._id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'You cannot book your own transport service',
+      });
+    }
+
+    const {
+      customerName,
+      customerEmail,
+      customerPhone,
+      serviceDate,
+      pickupLocation,
+      pickupCoordinates,
+      destination,
+      destinationCoordinates,
+      message,
+    } = req.body;
+
+    if (
+      !customerName?.trim() ||
+      !customerEmail?.trim() ||
+      !customerPhone?.trim() ||
+      !serviceDate ||
+      !pickupLocation?.trim() ||
+      !destination?.trim() ||
+      !Number.isFinite(pickupCoordinates?.latitude) ||
+      !Number.isFinite(pickupCoordinates?.longitude) ||
+      !Number.isFinite(destinationCoordinates?.latitude) ||
+      !Number.isFinite(destinationCoordinates?.longitude)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'Complete all required booking details',
+      });
+    }
+
+    const date = new Date(serviceDate);
+    if (Number.isNaN(date.getTime()) || date <= new Date()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Choose a future date and time for the booking',
+      });
+    }
+
+    const booking = await TransportBooking.create({
+      transport: transport._id,
+      customer: req.user._id,
+      provider: transport.owner,
+      customerName: customerName.trim(),
+      customerEmail: customerEmail.trim(),
+      customerPhone: customerPhone.trim(),
+      serviceDate: date,
+      pickupLocation: pickupLocation.trim(),
+      pickupCoordinates,
+      destination: destination.trim(),
+      destinationCoordinates,
+      message: message?.trim() || '',
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Your booking request has been submitted',
+      booking,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 /**
  * @route   POST /api/transport

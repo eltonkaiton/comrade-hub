@@ -5,18 +5,10 @@
   color-scheme: light;
 }
 
-/* =========================
-   CONTAINER
-========================= */
-
 .transport-container {
   width: min(1180px, calc(100% - 40px));
   margin: 0 auto;
 }
-
-/* =========================
-   NAVBAR
-========================= */
 
 .transport-navbar {
   position: sticky;
@@ -509,9 +501,7 @@
   margin-top: 16px;
 }
 
-.transport-view-btn,
-.transport-call-btn,
-.transport-whatsapp-btn {
+.transport-view-btn {
   min-height: 40px;
   border-radius: 8px;
   display: inline-flex;
@@ -526,29 +516,6 @@
   flex: 1;
   background: #2563eb;
   color: #ffffff;
-}
-
-.transport-call-btn {
-  width: 42px;
-  flex: 0 0 42px;
-  border: 1px solid #dce3ed;
-  background: #ffffff;
-  color: #2563eb;
-  cursor: pointer;
-}
-
-.transport-whatsapp-btn {
-  flex: 0 0 auto;
-  padding: 0 11px;
-  border: 1px solid #dce3ed;
-  background: #ffffff;
-  color: #15803d;
-  cursor: pointer;
-}
-
-.transport-call-btn:hover,
-.transport-whatsapp-btn:hover {
-  background: #f5f8ff;
 }
 
 .transport-empty {
@@ -834,11 +801,7 @@
     grid-template-columns: 1fr;
   }
 
-  .transport-provider-actions {
-    flex-wrap: wrap;
-  }
-
   .transport-view-btn {
-    min-width: 100%;
+    min-width: 0;
   }
 }

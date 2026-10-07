@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './TransportDetails.css';
+
+const BookingMap = lazy(() => import('./TransportBookingMap'));
 
 const API_BASE_URL = 'https://comradehub-api.onrender.com';
 const PLACEHOLDER_IMAGE =
@@ -21,11 +24,20 @@ const TYPE_META = {
 function TransportDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, token } = useAuth();
 
   const [provider, setProvider] = useState(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [bookingForm, setBookingForm] = useState({});
+  const [bookingError, setBookingError] = useState('');
+  const [bookingSuccess, setBookingSuccess] = useState('');
+  const [bookingSubmitting, setBookingSubmitting] = useState(false);
+  const [locationLoading, setLocationLoading] = useState('');
+  const [locationError, setLocationError] = useState('');
 
   useEffect(() => {
     let isMounted = true;
@@ -118,6 +130,147 @@ function TransportDetails() {
     return () => window.clearInterval(intervalId);
   }, [provider]);
 
+  const openBooking = () => {
+    setBookingForm({
+      customerName: [user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.name || '',
+      customerEmail: user?.email || '',
+      customerPhone: user?.phone || '',
+      serviceDate: '',
+      pickupLocation: '',
+      pickupCoordinates: null,
+      destination: '',
+      destinationCoordinates: null,
+      message: '',
+    });
+    setBookingError('');
+    setBookingSuccess('');
+    setLocationError('');
+    setBookingOpen(true);
+  };
+
+  const captureLiveLocation = (point) => {
+    if (!navigator.geolocation) {
+      setLocationError('Live location is not supported by this browser.');
+      return;
+    }
+
+    setLocationLoading(point);
+    setLocationError('');
+
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const coordinates = {
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          accuracy: coords.accuracy,
+        };
+        const locationText = `${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`;
+
+        setBookingForm((current) => ({
+          ...current,
+          [`${point}Location`]: locationText,
+          [`${point}Coordinates`]: coordinates,
+        }));
+        setLocationLoading('');
+      },
+      (geolocationError) => {
+        const messages = {
+          1: 'Location permission was denied. Allow location access in your browser settings and try again.',
+          2: 'Your current location could not be determined. Try again where GPS reception is available.',
+          3: 'The location request timed out. Please try again.',
+        };
+        setLocationError(messages[geolocationError.code] || 'Could not get your live location.');
+        setLocationLoading('');
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  };
+
+  const findLocationOnMap = async (point) => {
+    const address = bookingForm[`${point}Location`]?.trim();
+    if (!address) {
+      setLocationError(`Enter a ${point} address first.`);
+      return;
+    }
+
+    setLocationLoading(`${point}-search`);
+    setLocationError('');
+
+    try {
+      const response = await fetch(
+        `https://photon.komoot.io/api/?q=${encodeURIComponent(address)}&limit=1`
+      );
+      if (!response.ok) throw new Error('Location search is temporarily unavailable.');
+
+      const result = await response.json();
+      const feature = result.features?.[0];
+      if (!feature) throw new Error(`No map result found for "${address}". Try a more specific address.`);
+
+      const [longitude, latitude] = feature.geometry.coordinates;
+      const properties = feature.properties || {};
+      const formattedAddress = [...new Set([
+        properties.name,
+        properties.street,
+        properties.city || properties.town || properties.village,
+        properties.state,
+        properties.country,
+      ].filter(Boolean))].join(', ') || address;
+
+      setBookingForm((current) => ({
+        ...current,
+        [`${point}Location`]: formattedAddress,
+        [`${point}Coordinates`]: { latitude, longitude },
+      }));
+    } catch (geocodeError) {
+      setLocationError(geocodeError.message || 'Could not find this address on the map.');
+    } finally {
+      setLocationLoading('');
+    }
+  };
+
+  const handleBookingChange = (event) => {
+    const { name, value } = event.target;
+    const point = name === 'pickupLocation' ? 'pickup' : name === 'destination' ? 'destination' : null;
+    setBookingForm((current) => ({
+      ...current,
+      [name]: value,
+      ...(point ? { [`${point}Coordinates`]: null } : {}),
+    }));
+    if (point) setLocationError('');
+  };
+
+  const submitBooking = async (event) => {
+    event.preventDefault();
+    setBookingError('');
+    if (!bookingForm.pickupCoordinates || !bookingForm.destinationCoordinates) {
+      setBookingError('Find both addresses on the map or capture their live locations before submitting.');
+      return;
+    }
+    setBookingSubmitting(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/transport/${provider.id}/bookings`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(bookingForm),
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Could not submit the booking request.');
+      }
+
+      setBookingSuccess(data.message || 'Your booking request has been submitted.');
+    } catch (bookingSubmitError) {
+      setBookingError(bookingSubmitError.message || 'Could not submit the booking request.');
+    } finally {
+      setBookingSubmitting(false);
+    }
+  };
+
   // ---------- Loading ----------
   if (loading) {
     return (
@@ -154,12 +307,6 @@ function TransportDetails() {
     );
   }
 
-  const whatsappMessage = encodeURIComponent(
-    `Hello ${provider.name}, I found your transport service on ComradeHub and would like to make an enquiry.`
-  );
-
-  const phoneDigits = provider.phone.replace(/\D/g, '');
-  const hasPhone = phoneDigits.length > 0;
   const activeImage = provider.images[activeImageIndex];
 
   return (
@@ -256,12 +403,6 @@ function TransportDetails() {
                 <h1>{provider.name}</h1>
 
                 <p>📍 {provider.location}</p>
-                {hasPhone && (
-                  <a className="transport-driver-phone" href={`tel:${phoneDigits}`}>
-                    <span aria-hidden="true">☎</span>
-                    Driver number: {provider.phone}
-                  </a>
-                )}
               </div>
 
               {provider.verified && (
@@ -346,48 +487,21 @@ function TransportDetails() {
 
           <aside className="transport-sidebar">
             <div className="transport-contact-card">
-              <h2>Contact Provider</h2>
-
-              {hasPhone ? (
-                <>
-                  <a
-                    href={`tel:${phoneDigits}`}
-                    className="transport-call-btn"
-                  >
-                    📞 Call Provider
-                  </a>
-
-                  <a
-                    href={`https://wa.me/${phoneDigits}?text=${whatsappMessage}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="transport-whatsapp-btn"
-                  >
-                    💬 WhatsApp
-                  </a>
-                </>
-              ) : (
-                <p className="transport-no-contact">
-                  Contact details not provided.
-                </p>
-              )}
-
-              {provider.email && (
-                <a
-                  href={`mailto:${provider.email}?subject=${encodeURIComponent(
-                    `Enquiry about ${provider.name}`
-                  )}`}
-                  className="transport-message-btn"
-                >
-                  ✉ Send Message
-                </a>
-              )}
+              <h2>Book This Service</h2>
+              <p>Send a booking request to {provider.name} with your trip details.</p>
+              <button
+                type="button"
+                className="transport-booking-btn"
+                onClick={openBooking}
+              >
+                Book Service
+              </button>
             </div>
 
             <div className="transport-safety-card">
               <strong>🛡️ Safety First</strong>
               <p>
-                Confirm the driver's identity, agree on the fare before
+                Confirm the driver's identity before
                 travelling and avoid sharing sensitive information.
               </p>
             </div>
@@ -399,6 +513,175 @@ function TransportDetails() {
         <strong>ComradeHub</strong>
         <span>Everything Comrades Need, In One Place.</span>
       </footer>
+
+      {bookingOpen && (
+        <div
+          className="transport-booking-backdrop"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setBookingOpen(false);
+          }}
+        >
+          <section
+            className="transport-booking-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="transport-booking-title"
+          >
+            <div className="transport-booking-header">
+              <div>
+                <span className="transport-type">BOOKING REQUEST</span>
+                <h2 id="transport-booking-title">Book {provider.name}</h2>
+              </div>
+              <button
+                type="button"
+                className="transport-booking-close"
+                aria-label="Close booking form"
+                onClick={() => setBookingOpen(false)}
+              >
+                ×
+              </button>
+            </div>
+
+            {bookingSuccess ? (
+              <div className="transport-booking-confirmation" role="status">
+                <strong>Request sent</strong>
+                <p>{bookingSuccess}</p>
+                <button type="button" className="transport-booking-btn" onClick={() => setBookingOpen(false)}>
+                  Done
+                </button>
+              </div>
+            ) : !user || !token ? (
+              <div className="transport-booking-login">
+                <p>Sign in to book this transport service.</p>
+                <Link
+                  to="/login"
+                  state={{ from: location.pathname }}
+                  className="transport-booking-btn"
+                >
+                  Sign in to continue
+                </Link>
+              </div>
+            ) : (
+              <form className="transport-booking-form" onSubmit={submitBooking}>
+                {bookingError && <p className="transport-booking-error" role="alert">{bookingError}</p>}
+                <div className="transport-booking-grid">
+                  <label>
+                    Full name
+                    <input name="customerName" value={bookingForm.customerName || ''} onChange={handleBookingChange} autoComplete="name" required />
+                  </label>
+                  <label>
+                    Email
+                    <input name="customerEmail" type="email" value={bookingForm.customerEmail || ''} onChange={handleBookingChange} autoComplete="email" required />
+                  </label>
+                  <label>
+                    Phone
+                    <input name="customerPhone" type="tel" value={bookingForm.customerPhone || ''} onChange={handleBookingChange} autoComplete="tel" required />
+                  </label>
+                  <label>
+                    Date and time
+                    <input name="serviceDate" type="datetime-local" min={new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)} value={bookingForm.serviceDate || ''} onChange={handleBookingChange} required />
+                  </label>
+                  <label className="transport-booking-location">
+                    Pickup point
+                    <input
+                      name="pickupLocation"
+                      value={bookingForm.pickupLocation || ''}
+                      placeholder="Type an address or place"
+                      onChange={handleBookingChange}
+                      required
+                    />
+                    <div className="transport-location-actions">
+                      <button
+                        type="button"
+                        className="transport-location-button"
+                        onClick={() => findLocationOnMap('pickup')}
+                        disabled={Boolean(locationLoading)}
+                      >
+                        {locationLoading === 'pickup-search' ? 'Searching…' : 'Find on map'}
+                      </button>
+                      <button
+                        type="button"
+                        className="transport-location-button secondary"
+                        onClick={() => captureLiveLocation('pickup')}
+                        disabled={Boolean(locationLoading)}
+                      >
+                        {locationLoading === 'pickup' ? 'Getting location…' : '⌖ Use live location'}
+                      </button>
+                    </div>
+                  </label>
+                  <label className="transport-booking-location">
+                    Destination point
+                    <input
+                      name="destination"
+                      value={bookingForm.destination || ''}
+                      placeholder="Type an address or place"
+                      onChange={handleBookingChange}
+                      required
+                    />
+                    <div className="transport-location-actions">
+                      <button
+                        type="button"
+                        className="transport-location-button"
+                        onClick={() => findLocationOnMap('destination')}
+                        disabled={Boolean(locationLoading)}
+                      >
+                        {locationLoading === 'destination-search' ? 'Searching…' : 'Find on map'}
+                      </button>
+                      <button
+                        type="button"
+                        className="transport-location-button secondary"
+                        onClick={() => captureLiveLocation('destination')}
+                        disabled={Boolean(locationLoading)}
+                      >
+                        {locationLoading === 'destination' ? 'Getting location…' : '⌖ Use live location'}
+                      </button>
+                    </div>
+                  </label>
+                </div>
+                {locationError && (
+                  <p className="transport-booking-error" role="alert">
+                    {locationError}
+                  </p>
+                )}
+                {(bookingForm.pickupCoordinates || bookingForm.destinationCoordinates) && (
+                  <section className="transport-booking-map-section" aria-label="Selected location map">
+                    <div className="transport-booking-map-heading">
+                      <strong>Route preview</strong>
+                      <span>
+                        {bookingForm.pickupCoordinates && bookingForm.destinationCoordinates
+                          ? 'Pickup to destination'
+                          : 'One point selected'}
+                      </span>
+                    </div>
+                    <Suspense fallback={<div className="transport-booking-map-loading">Loading map…</div>}>
+                      <BookingMap
+                        pickup={bookingForm.pickupCoordinates
+                          ? [bookingForm.pickupCoordinates.latitude, bookingForm.pickupCoordinates.longitude]
+                          : null}
+                        destination={bookingForm.destinationCoordinates
+                          ? [bookingForm.destinationCoordinates.latitude, bookingForm.destinationCoordinates.longitude]
+                          : null}
+                      />
+                    </Suspense>
+                  </section>
+                )}
+                <label className="transport-booking-message">
+                  Message for the provider (optional)
+                  <textarea name="message" value={bookingForm.message || ''} onChange={handleBookingChange} rows="3" maxLength="1000" />
+                </label>
+                <div className="transport-booking-actions">
+                  <button type="button" className="transport-booking-cancel" onClick={() => setBookingOpen(false)} disabled={bookingSubmitting}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="transport-booking-btn" disabled={bookingSubmitting}>
+                    {bookingSubmitting ? 'Sending request…' : 'Send booking request'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </section>
+        </div>
+      )}
     </div>
   );
 }

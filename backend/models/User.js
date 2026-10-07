@@ -41,7 +41,8 @@ const userSchema = new mongoose.Schema(
         'Seller',
         'Landlord',
         'Motorist',
-        'Business'
+        'Business',
+        'Admin'
       ],
       default: 'Comrade'
     },

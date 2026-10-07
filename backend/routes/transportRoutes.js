@@ -3,6 +3,7 @@ import upload from '../middleware/upload.js';
 import { protect } from '../middleware/authMiddleware.js';
 import {
   createTransport,
+  createTransportBooking,
   getTransports,
   getTransportById,
   getMyTransports,
@@ -17,6 +18,9 @@ router.get('/', getTransports);
 
 // Private — must be before /:id
 router.get('/mine', protect, getMyTransports);
+
+// Booking requests require an authenticated customer
+router.post('/:id/bookings', protect, createTransportBooking);
 
 // Public dynamic
 router.get('/:id', getTransportById);
