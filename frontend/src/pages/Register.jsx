@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Register.css';
 
 function Register() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -100,7 +102,7 @@ function Register() {
 
       // Redirect after successful registration
       setTimeout(() => {
-        window.location.href = '/login';
+        navigate('/login', { replace: true });
       }, 1500);
 
     } catch (error) {
@@ -399,9 +401,9 @@ function Register() {
 
               <span>
                 I agree to the{' '}
-                <a href="/terms">Terms of Service</a>{' '}
+                  <Link to="/terms">Terms of Service</Link>{' '}
                 and{' '}
-                <a href="/privacy">Privacy Policy</a>.
+                  <Link to="/privacy">Privacy Policy</Link>.
               </span>
 
             </label>
@@ -423,7 +425,7 @@ function Register() {
 
             Already have an account?
 
-            <a href="/login"> Sign in</a>
+            <Link to="/login"> Sign in</Link>
 
           </div>
 
