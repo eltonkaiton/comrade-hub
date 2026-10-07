@@ -250,13 +250,11 @@ function Register() {
             {/* Email */}
             <div className="form-group">
 
-              <label>Email Address</label>
+              <label htmlFor="register-email">Email Address</label>
 
-              <div className="input-with-icon">
-
-                <span>✉</span>
-
+              <div>
                 <input
+                  id="register-email"
                   type="email"
                   name="email"
                   placeholder="you@example.com"
@@ -272,13 +270,11 @@ function Register() {
             {/* Phone */}
             <div className="form-group">
 
-              <label>Phone Number</label>
+              <label htmlFor="register-phone">Phone Number</label>
 
-              <div className="input-with-icon">
-
-                <span>📱</span>
-
+              <div>
                 <input
+                  id="register-phone"
                   type="tel"
                   name="phone"
                   placeholder="07XX XXX XXX"
